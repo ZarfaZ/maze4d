@@ -4,6 +4,7 @@
 
 #include <glad/glad.h>
 #include <glm/glm.hpp>
+#include <Utils.h>
 
 #include <string>
 #include <fstream>
@@ -59,6 +60,7 @@ public:
 
 	void LoadFromFiles(std::string vertexFile, std::string fragmentFile)
 	{
+		Log("Loading shaders: ", vertexFile, ", ", fragmentFile);
 		std::ostringstream sstream;
 		std::ifstream fs(vertexFile);
 		sstream << fs.rdbuf();
@@ -70,6 +72,7 @@ public:
 		sstream1 << fs1.rdbuf();
 		std::string FragmentString(sstream1.str());
 		const char* Fptr = FragmentString.c_str();
+		Log("Shader source sizes: vertex=", VertexString.size(), ", fragment=", FragmentString.size());
 
 		GenerateShader(Vptr, Fptr);
 	}
@@ -153,8 +156,10 @@ private:
 			if (!success)
 			{
 				glGetShaderInfoLog(shader, 1024, NULL, infoLog);
-				std::cout << "ERROR::SHADER_COMPILATION_ERROR of type: " << type << "\n" << infoLog << "\n -- --------------------------------------------------- -- " << std::endl;
+				Log("ERROR::SHADER_COMPILATION_ERROR of type: ", type, "\n", infoLog);
 			}
+			else
+				Log("Shader compiled successfully: ", type);
 		}
 		else
 		{
@@ -162,9 +167,10 @@ private:
 			if (!success)
 			{
 				glGetProgramInfoLog(shader, 1024, NULL, infoLog);
-				std::cout << "ERROR::PROGRAM_LINKING_ERROR of type: " << type << "\n" << infoLog << "\n -- --------------------------------------------------- -- " << std::endl;
+				Log("ERROR::PROGRAM_LINKING_ERROR of type: ", type, "\n", infoLog);
 			}
+			else
+				Log("Shader program linked successfully");
 		}
 	}
 };
-

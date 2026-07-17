@@ -198,7 +198,21 @@ GLFWwindow* InitGL()
 		CriticalError("Failed to initialize OpenGL context");
 		return nullptr;
 	}
-	printf("OpenGL %d.%d\n", GLVersion.major, GLVersion.minor);
+	Log("OpenGL context: ", GLVersion.major, ".", GLVersion.minor);
+	Log("GL_VENDOR: ", reinterpret_cast<const char*>(glGetString(GL_VENDOR)));
+	Log("GL_RENDERER: ", reinterpret_cast<const char*>(glGetString(GL_RENDERER)));
+	Log("GL_VERSION: ", reinterpret_cast<const char*>(glGetString(GL_VERSION)));
+	Log("GLSL_VERSION: ", reinterpret_cast<const char*>(glGetString(GL_SHADING_LANGUAGE_VERSION)));
+
+	GLint maxTextureUnits = 0;
+	GLint maxCombinedTextureUnits = 0;
+	GLint max3dTextureSize = 0;
+	glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &maxTextureUnits);
+	glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &maxCombinedTextureUnits);
+	glGetIntegerv(GL_MAX_3D_TEXTURE_SIZE, &max3dTextureSize);
+	Log("GL limits: fragment texture units=", maxTextureUnits,
+		", combined texture units=", maxCombinedTextureUnits,
+		", max 3D texture size=", max3dTextureSize);
 
 	return window;
 }

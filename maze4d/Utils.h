@@ -98,12 +98,11 @@ static void Print(T t)
 template<typename T>
 static void PrintN(T t)
 {
-	/*
 	std::ofstream outfile;
 
-	outfile.open("Diagtostics.txt", std::ios_base::app); // append instead of overwrite
-	outfile << t;	
-	*/
+	outfile.open("Diagnostics.txt", std::ios_base::app); // append instead of overwrite
+	if (outfile.is_open())
+		outfile << t;
 	std::cout << t;
 }
 
@@ -206,5 +205,3 @@ class IDrawable
 public:
 	virtual void Draw() {}
 };
-
-

@@ -170,7 +170,7 @@ vec4 GetRaycastVector(vec2 texCoord)
 	return v;
 }
 
-vec4 GetPixelFromTexture(ivec4 map, vec4 raycastVec, int edge, ivec4 step, int blockType, float lightLevel = 1.0f, float addedAlpha = 1.0f)
+vec4 GetPixelFromTexture(ivec4 map, vec4 raycastVec, int edge, ivec4 step, int blockType, float lightLevel, float addedAlpha)
 {
 	float dist = 0.0f;
 	vec3 texPoint;
@@ -292,7 +292,7 @@ vec4 GetRaycastPixel(vec4 raycastVector)
 			outRangeDistance = outRangeDistance + 1;
 			if (prevBlockType > 0)
 			{
-				hitPixel = GetPixelFromTexture(map, v, edge, step, prevBlockType);
+				hitPixel = GetPixelFromTexture(map, v, edge, step, prevBlockType, 1.0f, 1.0f);
 				hitPixel.w = prevAlpha;
 			}
 
@@ -316,7 +316,7 @@ vec4 GetRaycastPixel(vec4 raycastVector)
 			}
 			else if (prevBlockType > 0)
 			{
-				hitPixel = GetPixelFromTexture(map, v, edge, step, prevBlockType, prevLightLevel);
+				hitPixel = GetPixelFromTexture(map, v, edge, step, prevBlockType, prevLightLevel, 1.0f);
 				hitPixel.w = prevAlpha;
 			}
 		}
