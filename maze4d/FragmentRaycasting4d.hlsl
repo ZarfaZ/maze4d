@@ -170,6 +170,20 @@ vec4 GetRaycastVector(vec2 texCoord)
 	return v;
 }
 
+vec4 GetEdgeTexturePixel(int edge, vec3 texPoint)
+{
+	// GLSL 3.30 does not guarantee arbitrary non-uniform sampler-array indexing.
+	// Keep every sampler index constant so adjacent fragments may safely hit different faces.
+	if (edge == NEG_X) return texture(edge3dCube[NEG_X], texPoint, 0);
+	if (edge == POS_X) return texture(edge3dCube[POS_X], texPoint, 0);
+	if (edge == NEG_Y) return texture(edge3dCube[NEG_Y], texPoint, 0);
+	if (edge == POS_Y) return texture(edge3dCube[POS_Y], texPoint, 0);
+	if (edge == NEG_Z) return texture(edge3dCube[NEG_Z], texPoint, 0);
+	if (edge == POS_Z) return texture(edge3dCube[POS_Z], texPoint, 0);
+	if (edge == NEG_W) return texture(edge3dCube[NEG_W], texPoint, 0);
+	if (edge == POS_W) return texture(edge3dCube[POS_W], texPoint, 0);
+	return vec4(0.0f);
+}
 vec4 GetPixelFromTexture(ivec4 map, vec4 raycastVec, int edge, ivec4 step, int blockType, float lightLevel, float addedAlpha)
 {
 	float dist = 0.0f;
@@ -200,11 +214,11 @@ vec4 GetPixelFromTexture(ivec4 map, vec4 raycastVec, int edge, ivec4 step, int b
 	
 	texPoint = texPoint * texturesPerCube;
 
-	vec4 CubePixel;
+	vec4 CubePixel = vec4(0.0f);
 	//regular block type
 	if (blockType == 10)
 	{
-		CubePixel = texture(edge3dCube[edge], texPoint, 0);
+		CubePixel = GetEdgeTexturePixel(edge, texPoint);
 		CubePixel = ApplyLight(CubePixel, lightLevel);
 	}
 	//light block type
