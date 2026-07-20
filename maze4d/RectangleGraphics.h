@@ -122,6 +122,12 @@ public:
 	//texture should be in RGBA buffer
 	void Draw(uint8_t* textureData, int textureWidth, int textureHeight, GLint internalFormat = GL_RGBA)
 	{
+		// Whitespace glyphs produced by FreeType have an empty bitmap. Uploading
+		// a 0x0 texture leaves the shared UI texture incomplete on some drivers
+		// and causes the next draw call (the button below) to render incorrectly.
+		if (textureData == nullptr || textureWidth <= 0 || textureHeight <= 0)
+			return;
+
 		// bind textures on corresponding texture units
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, screenTex);
