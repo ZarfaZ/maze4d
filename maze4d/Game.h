@@ -23,6 +23,8 @@ public:
 			delete playerController;
 		if (field != nullptr)
 			delete field;
+		if (maze != nullptr)
+			delete maze;
 		if (cfg != nullptr)
 			delete cfg;
 
@@ -39,6 +41,8 @@ public:
 	void NewEditor();
 
 	void ApplyNewParameters();
+	const Maze* GetMaze() const { return maze; }
+	glm::ivec4 GetCurrentRoom() const;
 
 	int viewWidth;
 	int viewHeight;
@@ -54,4 +58,8 @@ public:
 	
 	Config* cfg = nullptr;
 	Field* field = nullptr; //to get roo
+
+private:
+	Maze* maze = nullptr;
+	int mazeRoomSize = 1;
 };

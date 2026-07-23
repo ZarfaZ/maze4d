@@ -1,4 +1,5 @@
 #include <UserInterfaceClasses.h>
+#include <MazeMapScreen.h>
 #include <math.h>
 
 MainUiController::MainUiController(Game* game) : UserInterfaceItem(game)
@@ -90,20 +91,14 @@ UI_ACTION_CODE MainUiController::OnCancel()
 	{
 		openedUiList.push(new MainMenu(game));
 		isMenu = true;
+		if (game->playerController != nullptr)
+			game->playerController->ResetInputState();
 	}
 	else
 	{
 		UI_ACTION_CODE action = openedUiList.top()->OnCancel();
 		if (action == UI_ACTION_CLOSE_ITEM)
-		{
-			UserInterfaceItem* ptr = openedUiList.top();
-			openedUiList.pop();
-			delete ptr;
-			reRenderBackground = true;
-
-			if (openedUiList.empty())
-				return UI_ACTION_CLOSE_ITEM;
-		}
+			CloseCurrentItem();
 	}
 	return UI_ACTION_NOTHING;
 };
@@ -111,8 +106,25 @@ UI_ACTION_CODE MainUiController::OnCancel()
 UI_ACTION_CODE MainUiController::OnKeyInput(unsigned int keyCode)
 {
 	if (!openedUiList.empty())
-		return openedUiList.top()->OnKeyInput(keyCode);
+	{
+		UI_ACTION_CODE action = openedUiList.top()->OnKeyInput(keyCode);
+		if (action == UI_ACTION_CLOSE_ITEM)
+			CloseCurrentItem();
+		return action;
+	}
 	return UI_ACTION_NOTHING;
+}
+
+void MainUiController::OpenMap(const Maze& topology, glm::ivec4 currentRoom)
+{
+	if (!openedUiList.empty())
+		return;
+
+	if (game->playerController != nullptr)
+		game->playerController->ResetInputState();
+	openedUiList.push(new MazeMapScreen(game, topology, currentRoom));
+	isMenu = true;
+	reRenderBackground = true;
 }
 
 void MainUiController::RenderPlayerinfo(Player* player, uint8_t* buffer)

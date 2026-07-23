@@ -17,6 +17,8 @@ add_executable(${PROJECT_NAME}
     maze4d/Game.cpp
     maze4d/main.cpp
     maze4d/Maze.cpp
+    maze4d/MazeMap.cpp
+    maze4d/MazeMapScreen.cpp
     maze4d/Utils.cpp
     maze4d/HotkeysMenu.cpp
     maze4d/MainMenu.cpp

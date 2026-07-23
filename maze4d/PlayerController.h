@@ -95,8 +95,12 @@ public:
 		{
 			if (key == rotateButtons[num])
 			{
+				const bool isZwKeyboardRotation = num == 10 || num == 11;
 				if (action == GLFW_PRESS)
-					isRotate[num] = true;
+				{
+					if (!isZwKeyboardRotation || (mods & GLFW_MOD_SHIFT) != 0)
+						isRotate[num] = true;
+				}
 				if (action == GLFW_RELEASE)
 					isRotate[num] = false;
 			}
@@ -107,13 +111,15 @@ public:
 		for (size_t i = 0; i < rotateButtons.size(); i++)
 			fillRotate(i);
 
-		if (key == GLFW_KEY_LEFT_SHIFT)
+		if (key == GLFW_KEY_LEFT_SHIFT || key == GLFW_KEY_RIGHT_SHIFT)
 		{
 			if (action == GLFW_PRESS)
 				isMouseRotateW = true;
 			else if (action == GLFW_RELEASE)
 			{
 				isMouseRotateW = false;
+				isRotate[10] = false;
+				isRotate[11] = false;
 			}
 		}
 
@@ -139,6 +145,13 @@ public:
 	{ 
 		isFirstCall = true; 
 		isMouseRotateW = false;
+	}
+
+	void ResetInputState()
+	{
+		isMove.fill(false);
+		isRotate.fill(false);
+		FreezeController();
 	}
 
 	Player* player = nullptr;

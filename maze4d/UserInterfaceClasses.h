@@ -241,6 +241,8 @@ public:
 	virtual UI_ACTION_CODE OnKeyInput(unsigned int keyCode);
 
 	void CloseCurrentItem();
+	void OpenMap(const Maze& topology, glm::ivec4 currentRoom);
+	bool BlocksGameplay() const { return isMenu; }
 	
 	bool reRenderBackground = true;
 	bool isMenu = true;
@@ -251,7 +253,6 @@ private:
 	void ExitMenu() { isMenu = false; }
 	
 };
-
 
 
 

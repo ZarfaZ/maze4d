@@ -64,6 +64,14 @@ void OnKeyInputInGame(GLFWwindow* window, int key, int scancode, int action, int
 	
 	IInputController* curController = game.playerController;
 
+	if (key == GLFW_KEY_M && action == GLFW_PRESS && (mods & GLFW_MOD_SHIFT) == 0)
+	{
+		const Maze* maze = game.GetMaze();
+		if (maze != nullptr)
+			mainUi.OpenMap(*maze, game.GetCurrentRoom());
+		return;
+	}
+
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
 	{
 		mainUi.OnCancel();
@@ -325,7 +333,8 @@ int main()
 			}
 
 			startFrameTime = glfwGetTime();
-			game.playerController->Update(delta);
+			if (!mainUi.BlocksGameplay())
+				game.playerController->Update(delta);
 			if (!game.NeedReconfigureResolution)
 				RenderFrame(delta, nullptr, texData);
 

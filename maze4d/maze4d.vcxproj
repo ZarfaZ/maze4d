@@ -187,6 +187,8 @@ xcopy /y /d  "$(ProjectDir)*.hlsl" "$(OutDir)"</Command>
     <ClCompile Include="MainMenuSettings.cpp" />
     <ClCompile Include="MainUiController.cpp" />
     <ClCompile Include="Maze.cpp" />
+    <ClCompile Include="MazeMap.cpp" />
+    <ClCompile Include="MazeMapScreen.cpp" />
     <ClCompile Include="MainMenu.cpp" />
     <ClCompile Include="MazeField.cpp" />
     <ClCompile Include="Player.cpp" />
@@ -204,9 +206,12 @@ xcopy /y /d  "$(ProjectDir)*.hlsl" "$(OutDir)"</Command>
     <ClInclude Include="Cell.h" />
     <ClInclude Include="Config.h" />
     <ClInclude Include="Cube.h" />
+    <ClInclude Include="DirectionPalette.h" />
     <ClInclude Include="RectangleGraphics.h" />
     <ClInclude Include="MapEditor.h" />
     <ClInclude Include="Maze.h" />
+    <ClInclude Include="MazeMap.h" />
+    <ClInclude Include="MazeMapScreen.h" />
     <ClInclude Include="MazeField.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PlayerController.h" />

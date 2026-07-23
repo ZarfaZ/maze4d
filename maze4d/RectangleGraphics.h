@@ -3,6 +3,7 @@
 #include <glad/glad.h>
 #include <shader.h>
 #include <cstring>
+#include <glm/vec2.hpp>
 
 class RectangleGraphics
 {
@@ -97,6 +98,20 @@ public:
 		glBindBuffer(GL_ARRAY_BUFFER, VBO);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
+	}
+
+	void SetNewQuad(glm::vec2 firstLeft, glm::vec2 firstRight, glm::vec2 secondRight, glm::vec2 secondLeft)
+	{
+		float vertices[] = {
+			// positions                         // colors          // texture coords
+			firstLeft.x,  firstLeft.y,  0.0f,    1.0f, 1.0f, 0.0f,  0.0f, 1.0f,
+			firstRight.x, firstRight.y, 0.0f,    0.0f, 0.0f, 1.0f,  0.0f, 0.0f,
+			secondRight.x,secondRight.y,0.0f,    0.0f, 1.0f, 0.0f,  1.0f, 0.0f,
+			secondLeft.x, secondLeft.y, 0.0f,    1.0f, 0.0f, 0.0f,  1.0f, 1.0f
+		};
+
+		glBindBuffer(GL_ARRAY_BUFFER, VBO);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 	}
 
 	void Draw(uint8_t R, uint8_t G, uint8_t B, uint8_t Alpha = 255)

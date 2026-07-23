@@ -4,46 +4,46 @@
 
 //const glm::ivec4 MazeField::winMapSize = glm::ivec4(9, 9, 9, 9);
 
-void MazeField::GenerateField(const glm::ivec4 size, const int lightDist, const int roomSize, Config* cfg)
+Field* MazeField::GenerateField(const Maze& maze, const glm::ivec4 size, const int lightDist, const int roomSize, Config* cfg)
 {
-	if (field != nullptr)
-		delete field;
-
 	this->roomSize = roomSize;
 	field = new Field(size, lightDist, cfg);
 
 	field->CreateBorders();
-	CreateExit(maze);
-	GenerateWalls(maze);
-	GenerateLight(maze);
+	CreateExit(&maze);
+	GenerateWalls(&maze);
+	GenerateLight(&maze);
 
 	field->LoadFieldToGL();
+	return field;
 }
 
-void MazeField::CreateExit(Maze* maze)
+void MazeField::CreateExit(const Maze* maze)
 {
-	Random* rnd = Random::GetInstance();
+	if (!maze->HasExit())
+		return;
 
 	auto createExit = [&](int edge)
 	{
+		const glm::ivec4 room = maze->GetExit().room;
 		glm::ivec4 start = glm::ivec4(
-			(maze->size.x - 1)*roomSize + 1,
-			(maze->size.y - 1)*roomSize + 1,
-			(maze->size.z - 1)*roomSize + 1,
-			(maze->size.w - 1)*roomSize + 1
+			room.x*roomSize + 1,
+			room.y*roomSize + 1,
+			room.z*roomSize + 1,
+			room.w*roomSize + 1
 		);
 		glm::ivec4 end = glm::ivec4(
-			(maze->size.x)*roomSize,
-			(maze->size.y)*roomSize,
-			(maze->size.z)*roomSize,
-			(maze->size.w)*roomSize
+			(room.x + 1)*roomSize,
+			(room.y + 1)*roomSize,
+			(room.z + 1)*roomSize,
+			(room.w + 1)*roomSize
 		);
 		switch (edge)
 		{
-		case 0: start.x = (maze->size.x)*roomSize; end.x = (maze->size.x)*roomSize + 1; break;
-		case 1: start.y = (maze->size.y)*roomSize; end.y = (maze->size.y)*roomSize + 1; break;
-		case 2: start.z = (maze->size.z)*roomSize; end.z = (maze->size.z)*roomSize + 1; break;
-		case 3: start.w = (maze->size.w)*roomSize; end.w = (maze->size.w)*roomSize + 1; break;
+		case POS_X: start.x = (room.x + 1)*roomSize; end.x = start.x + 1; break;
+		case POS_Y: start.y = (room.y + 1)*roomSize; end.y = start.y + 1; break;
+		case POS_Z: start.z = (room.z + 1)*roomSize; end.z = start.z + 1; break;
+		case POS_W: start.w = (room.w + 1)*roomSize; end.w = start.w + 1; break;
 		default: break;
 		}
 		for (int x = start.x; x < end.x; x++)
@@ -68,16 +68,10 @@ void MazeField::CreateExit(Maze* maze)
 		}
 	};
 
-	std::vector<int> edgesForExit;
-	if (maze->size.x > 1) edgesForExit.push_back(0);
-	if (maze->size.y > 1) edgesForExit.push_back(1);
-	if (maze->size.z > 1) edgesForExit.push_back(2);
-	if (maze->size.w > 1) edgesForExit.push_back(3);
-	if (edgesForExit.size() > 0)
-		createExit(edgesForExit[rnd->GetInt(0, edgesForExit.size() - 1)]);
+	createExit(maze->GetExit().direction);
 }
 
-void MazeField::GenerateWalls(Maze* maze)
+void MazeField::GenerateWalls(const Maze* maze)
 {
 	auto createShape = [&](glm::ivec4 start, glm::ivec4 end)
 	{
@@ -206,7 +200,7 @@ void MazeField::GenerateWalls(Maze* maze)
 	}
 }
 
-void MazeField::GenerateLight(Maze* maze)
+void MazeField::GenerateLight(const Maze* maze)
 {
 	Random* rnd = Random::GetInstance();
 
@@ -318,4 +312,3 @@ void MazeField::GenerateLight(Maze* maze)
 	}
 	int i = 1;
 }
-

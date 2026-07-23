@@ -1,4 +1,5 @@
 #include <Cube.h>
+#include <DirectionPalette.h>
 
 Cube::TextureSet_t Cube::textureSet;
 Texture Cube::textureSelection;
@@ -6,14 +7,8 @@ Texture Cube::textureLight;
 
 void Cube::Init(Shader* shader)
 {
-	InitBlockTexture(textureSet[NEG_X], glm::ivec3(351, 86, 80), shader); // red
-	InitBlockTexture(textureSet[POS_X], glm::ivec3( 32, 86, 80), shader); // orange
-	InitBlockTexture(textureSet[NEG_Y], glm::ivec3( 62, 86, 80), shader); // yellow
-	InitBlockTexture(textureSet[POS_Y], glm::ivec3(128, 86, 80), shader); // green
-	InitBlockTexture(textureSet[NEG_Z], glm::ivec3(180, 86, 80), shader); // cyan
-	InitBlockTexture(textureSet[POS_Z], glm::ivec3(245, 86, 80), shader); // blue
-	InitBlockTexture(textureSet[NEG_W], glm::ivec3(282, 86, 80), shader); // purple
-	InitBlockTexture(textureSet[POS_W], glm::ivec3(  0,  0, 60), shader); // gray
+	for (int edge = 0; edge < EDGES_COUNT; edge++)
+		InitBlockTexture(textureSet[edge], DirectionPalette::GetHSV(edge), shader);
 	InitSelectionTexture(textureSelection, shader);
 	InitLightTexture(textureLight, shader);
 

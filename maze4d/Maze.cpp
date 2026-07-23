@@ -10,7 +10,7 @@ Maze::~Maze()
 	delete[] rooms;
 }
 
-bool Maze::IsWallExist(int edge, glm::ivec4 pos)
+bool Maze::IsWallExist(int edge, glm::ivec4 pos) const
 {
 	assert(IsRoomIndexValid(pos.x, pos.y, pos.z, pos.w));
 	return rooms[GetIndex(pos.x, pos.y, pos.z, pos.w)].walls[edge];
@@ -113,6 +113,8 @@ void Maze::Generate()
 			stackW.pop_back();
 		}
 	}
+
+	GenerateExit();
 }
 
 std::vector<int> Maze::FindUnvisitedNeighbours(int curX, int curY, int curZ, int curW)
@@ -134,12 +136,12 @@ std::vector<int> Maze::FindUnvisitedNeighbours(int curX, int curY, int curZ, int
 	return neighbours;
 }
 
-int Maze::GetIndex(const int x, const int y, const int z, const int w)
+int Maze::GetIndex(const int x, const int y, const int z, const int w) const
 {
 	return x*size.y*size.z*size.w + y*size.z*size.w + z*size.w + w;
 };
 
-bool Maze::IsRoomIndexValid(int x, int y, int z, int w)
+bool Maze::IsRoomIndexValid(int x, int y, int z, int w) const
 {
 	return (
 		x >= 0 && x < size.x &&
@@ -147,3 +149,20 @@ bool Maze::IsRoomIndexValid(int x, int y, int z, int w)
 		z >= 0 && z < size.z &&
 		w >= 0 && w < size.w);
 };
+
+void Maze::GenerateExit()
+{
+	std::vector<int> exitDirections;
+	if (size.x > 1) exitDirections.push_back(POS_X);
+	if (size.y > 1) exitDirections.push_back(POS_Y);
+	if (size.z > 1) exitDirections.push_back(POS_Z);
+	if (size.w > 1) exitDirections.push_back(POS_W);
+
+	// Even a 1x1x1x1 maze must remain finishable.
+	if (exitDirections.empty())
+		exitDirections.push_back(POS_X);
+
+	Random* rnd = Random::GetInstance();
+	exit.room = glm::ivec4(size.x - 1, size.y - 1, size.z - 1, size.w - 1);
+	exit.direction = exitDirections[rnd->GetInt(0, (int)exitDirections.size() - 1)];
+}

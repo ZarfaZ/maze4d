@@ -33,7 +33,7 @@ void HotKeysMenu::Render(uint8_t* buffer)
 	lines.push_back("XZ (yaw)      : L, J (or mouseX)");
 	lines.push_back("XY (pitch)    : I, K (or mougseY)");	
 	lines.push_back("YZ (roll)     : E, Q");
-	lines.push_back("ZW            : M, N (or mouseX + LSHIFT)");
+	lines.push_back("ZW            : Shift+M, Shift+N (or mouseX + LSHIFT)");
 	lines.push_back("XW            : O, U (or mouseY + LSHIFT)");
 	lines.push_back("YW            : Z, C");	
 	lines.push_back("Align W-angle : TAB");
@@ -55,6 +55,7 @@ void HotKeysMenu::Render(uint8_t* buffer)
 	lines.push_back("Noclip        : F8");
 	lines.push_back("Fullscreen    : F11");
 	lines.push_back("Lock mouse    : SPACE");
+	lines.push_back("Map           : M");
 	lines.push_back("Menu          : ESC");
 
 	int fontSizeY = height * 9 / 10 / lines.size();

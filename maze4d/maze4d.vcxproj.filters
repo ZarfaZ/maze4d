@@ -80,6 +80,12 @@
     <ClCompile Include="Maze.cpp">
       <Filter>Source files\FieldGenerators</Filter>
     </ClCompile>
+    <ClCompile Include="MazeMap.cpp">
+      <Filter>Source files\UserInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="MazeMapScreen.cpp">
+      <Filter>Source files\UserInterface</Filter>
+    </ClCompile>
     <ClCompile Include="MazeField.cpp">
       <Filter>Source files\FieldGenerators</Filter>
     </ClCompile>
@@ -139,6 +145,12 @@
     <ClInclude Include="Maze.h">
       <Filter>Header files\FieldGenerators</Filter>
     </ClInclude>
+    <ClInclude Include="MazeMap.h">
+      <Filter>Header files\UserInterface</Filter>
+    </ClInclude>
+    <ClInclude Include="MazeMapScreen.h">
+      <Filter>Header files\UserInterface</Filter>
+    </ClInclude>
     <ClInclude Include="MazeField.h">
       <Filter>Header files\FieldGenerators</Filter>
     </ClInclude>
@@ -149,6 +161,9 @@
       <Filter>Header files\FieldGenerators</Filter>
     </ClInclude>
     <ClInclude Include="RectangleGraphics.h">
+      <Filter>Header files</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectionPalette.h">
       <Filter>Header files</Filter>
     </ClInclude>
   </ItemGroup>

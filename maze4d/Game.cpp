@@ -19,21 +19,17 @@ void Game::Init()
 		glm::max(glm::abs(cfg->GetInt("maze_size_y")), 1),
 		glm::max(glm::abs(cfg->GetInt("maze_size_z")), 1),
 		glm::max(glm::abs(cfg->GetInt("maze_size_w")), 1));
-	int mazeRoomSize = glm::max(glm::abs(cfg->GetInt("maze_room_size")), 2);
+	mazeRoomSize = glm::max(glm::abs(cfg->GetInt("maze_room_size")), 2);
 
-	Maze maze(mazeSize);
-	maze.Generate();
-
-	MazeField* mazeField = new MazeField();
-	mazeField->GenerateMaze(mazeSize);
+	maze = new Maze(mazeSize);
+	maze->Generate();
 	glm::ivec4 fieldSize = glm::ivec4(
 		mazeSize.x * mazeRoomSize + 1, // +1 - map positive borders
 		mazeSize.y * mazeRoomSize + 1,
 		mazeSize.z * mazeRoomSize + 1,
 		mazeSize.w * mazeRoomSize + 1);
-	mazeField->GenerateField(fieldSize, glm::abs(cfg->GetInt("light_dist")), mazeRoomSize, cfg);
-
-	field = mazeField->field;
+	MazeField mazeField;
+	field = mazeField.GenerateField(*maze, fieldSize, glm::abs(cfg->GetInt("light_dist")), mazeRoomSize, cfg);
 	field->Init(this->cfg, -1, -1, 2, 2);
 
 	player.defaultPos = glm::vec4(mazeRoomSize / 2.0f + 0.2f);
@@ -80,6 +76,8 @@ void Game::NewGame()
 		delete playerController;
 	if (field != nullptr)
 		delete field;
+	if (maze != nullptr)
+		delete maze;
 
 	Init();	
 }
@@ -90,6 +88,11 @@ void Game::NewEditor()
 		delete playerController;
 	if (field != nullptr)
 		delete field;
+	if (maze != nullptr)
+	{
+		delete maze;
+		maze = nullptr;
+	}
 
 	int roomSize = glm::max(glm::abs(cfg->GetInt("editor_room_size")), 2);
 	roomSize++; //+1 positive borders
@@ -133,4 +136,17 @@ void Game::Draw()
 		//helperScene2->Draw(emptyBuffer, 1, 1);
 	}
 
+}
+
+glm::ivec4 Game::GetCurrentRoom() const
+{
+	if (maze == nullptr)
+		return glm::ivec4(0);
+
+	glm::ivec4 room = glm::ivec4(glm::floor(player.pos / (float)mazeRoomSize));
+	room.x = glm::clamp(room.x, 0, maze->size.x - 1);
+	room.y = glm::clamp(room.y, 0, maze->size.y - 1);
+	room.z = glm::clamp(room.z, 0, maze->size.z - 1);
+	room.w = glm::clamp(room.w, 0, maze->size.w - 1);
+	return room;
 }
