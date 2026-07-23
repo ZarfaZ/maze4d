@@ -14,6 +14,8 @@ public:
 private:
 	glm::vec2 ToScreen(glm::vec2 mapPosition) const;
 	void RenderMapLine(glm::vec2 start, glm::vec2 end, float width, glm::u8vec3 color);
+	void RenderMapRectangle(glm::vec2 minPosition, glm::vec2 maxPosition, glm::u8vec4 color);
+	void RenderSliceBackground(int y, int w, bool isCurrent);
 	void RenderNode(glm::vec2 position, int radius, glm::u8vec3 color);
 
 	MazeMap map;

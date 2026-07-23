@@ -22,6 +22,7 @@ public:
 
 	const std::vector<Node>& GetNodes() const { return nodes; }
 	const std::vector<Edge>& GetEdges() const { return edges; }
+	const glm::ivec4& GetSize() const { return size; }
 	const glm::vec2& GetMinBounds() const { return minBounds; }
 	const glm::vec2& GetMaxBounds() const { return maxBounds; }
 	bool HasExit() const { return hasExit; }

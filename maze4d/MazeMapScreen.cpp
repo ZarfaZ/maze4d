@@ -29,6 +29,13 @@ void MazeMapScreen::Render(uint8_t* buffer)
 	const std::vector<MazeMap::Node>& nodes = map.GetNodes();
 	const std::vector<MazeMap::Edge>& edges = map.GetEdges();
 	const float edgeWidth = glm::clamp(scale * 0.07f, 1.5f, 4.0f);
+	const glm::ivec4 mapSize = map.GetSize();
+
+	for (int y = 0; y < mapSize.y; y++)
+		for (int w = 0; w < mapSize.w; w++)
+			if (y != currentRoom.y || w != currentRoom.w)
+				RenderSliceBackground(y, w, false);
+	RenderSliceBackground(currentRoom.y, currentRoom.w, true);
 
 	for (size_t i = 0; i < edges.size(); i++)
 	{
@@ -112,6 +119,49 @@ void MazeMapScreen::RenderMapLine(glm::vec2 start, glm::vec2 end, float width, g
 		toViewport(secondRight),
 		toViewport(secondLeft));
 	graphics->Draw(color);
+}
+
+void MazeMapScreen::RenderMapRectangle(glm::vec2 minPosition, glm::vec2 maxPosition, glm::u8vec4 color)
+{
+	const float viewWidth = (float)game->viewWidth;
+	const float viewHeight = (float)game->viewHeight;
+	const glm::vec2 position(
+		2.0f * minPosition.x / viewWidth - 1.0f,
+		2.0f * minPosition.y / viewHeight - 1.0f);
+	const glm::vec2 size(
+		2.0f * (maxPosition.x - minPosition.x) / viewWidth,
+		2.0f * (maxPosition.y - minPosition.y) / viewHeight);
+
+	graphics->SetNewPosition(position.x, position.y, size.x, size.y);
+	graphics->Draw(color);
+}
+
+void MazeMapScreen::RenderSliceBackground(int y, int w, bool isCurrent)
+{
+	const glm::ivec4 mapSize = map.GetSize();
+	glm::ivec4 firstRoom(0, y, 0, w);
+	glm::ivec4 lastRoom(mapSize.x - 1, y, mapSize.z - 1, w);
+	glm::vec2 first = ToScreen(map.GetNodes()[map.GetNodeIndex(firstRoom)].position);
+	glm::vec2 last = ToScreen(map.GetNodes()[map.GetNodeIndex(lastRoom)].position);
+	glm::vec2 minPosition = glm::min(first, last);
+	glm::vec2 maxPosition = glm::max(first, last);
+
+	const float panelPadding = glm::clamp(scale * 0.28f, 7.0f, 24.0f);
+	minPosition -= glm::vec2(panelPadding);
+	maxPosition += glm::vec2(panelPadding);
+
+	const glm::u8vec4 fill = isCurrent
+		? glm::u8vec4(72, 76, 86, 165)
+		: glm::u8vec4(45, 49, 57, 135);
+	const glm::u8vec3 border = isCurrent
+		? glm::u8vec3(112, 118, 132)
+		: glm::u8vec3(70, 76, 88);
+
+	RenderMapRectangle(minPosition, maxPosition, fill);
+	RenderMapLine(glm::vec2(minPosition.x, minPosition.y), glm::vec2(maxPosition.x, minPosition.y), 1.0f, border);
+	RenderMapLine(glm::vec2(maxPosition.x, minPosition.y), glm::vec2(maxPosition.x, maxPosition.y), 1.0f, border);
+	RenderMapLine(glm::vec2(maxPosition.x, maxPosition.y), glm::vec2(minPosition.x, maxPosition.y), 1.0f, border);
+	RenderMapLine(glm::vec2(minPosition.x, maxPosition.y), glm::vec2(minPosition.x, minPosition.y), 1.0f, border);
 }
 
 void MazeMapScreen::RenderNode(glm::vec2 position, int radius, glm::u8vec3 color)
